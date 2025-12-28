@@ -5,24 +5,327 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Attention Rescue</title>
   <style>
-    body {
-      width: 320px;
-      min-height: 200px;
-      margin: 0;
-      padding: 16px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    * {
+      box-sizing: border-box;
     }
-    h1 {
-      font-size: 18px;
-      margin: 0 0 16px 0;
+
+    body {
+      width: 360px;
+      min-height: 480px;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      margin: 0 0 4px 0;
+      font-weight: 600;
+    }
+
+    .header .tagline {
+      font-size: 12px;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .streak-display {
+      text-align: center;
+      padding: 24px 16px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .streak-number {
+      font-size: 48px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .streak-label {
+      font-size: 14px;
+      margin: 8px 0 0 0;
+      opacity: 0.95;
+      font-weight: 500;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+      margin: 0;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      margin: 4px 0 0 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .productivity-bar {
+      margin-top: 12px;
+    }
+
+    .productivity-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .bar-container {
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-section {
+      padding: 12px 0;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .points-display {
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .progress-bar-container {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd89b 0%, #19547b 100%);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: #999;
+      text-align: right;
+    }
+
+    .achievements-preview {
+      margin-top: 12px;
+    }
+
+    .achievements-title {
+      font-size: 12px;
+      color: #666;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .achievement-badges {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+
+    .achievement-badge {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .achievement-badge.locked {
+      background: #e0e0e0;
+      opacity: 0.5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f5f5;
+    }
+
+    .btn-pause {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .btn-pause:hover {
+      background: #ff5252;
+    }
+
+    .btn-resume {
+      background: #51cf66;
+      color: white;
+    }
+
+    .btn-resume:hover {
+      background: #40c057;
+    }
+
+    .pause-status {
+      text-align: center;
+      padding: 8px;
+      background: #fff3cd;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #856404;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: white;
+    }
+
+    .error {
+      text-align: center;
+      padding: 20px;
+      color: #ff6b6b;
+      background: white;
+      border-radius: 12px;
+      margin: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .footer a:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <h1>🎯 Digital Attention Rescue</h1>
-  <div id="app">
-    <p>Loading...</p>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 Digital Attention Rescue</h1>
+      <p class="tagline">Stay focused, build streaks, achieve more</p>
+    </div>
+
+    <div id="app">
+      <div class="loading">Loading...</div>
+    </div>
+
+    <div class="footer">
+      <a href="dashboard.html" target="_blank">View Full Dashboard →</a>
+    </div>
   </div>
+
   <script src="dist/popup.js"></script>
 </body>
 </html>

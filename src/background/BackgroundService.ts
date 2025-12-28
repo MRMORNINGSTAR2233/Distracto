@@ -10,6 +10,8 @@ import { badgeManager } from './BadgeManager';
 import { notificationManager } from './NotificationManager';
 import { rewardSystem } from '../models/RewardSystem';
 import { activityDetector } from '../models/ActivityDetector';
+import { analyticsEngine } from '../models/AnalyticsEngine';
+import { insightsEngine } from '../models/InsightsEngine';
 
 /**
  * Message types for communication between content scripts and background
@@ -27,7 +29,10 @@ export enum MessageType {
   GET_ACHIEVEMENTS = 'GET_ACHIEVEMENTS',
   PAUSE_INTERVENTIONS = 'PAUSE_INTERVENTIONS',
   RESUME_INTERVENTIONS = 'RESUME_INTERVENTIONS',
-  GET_PAUSE_STATUS = 'GET_PAUSE_STATUS'
+  GET_PAUSE_STATUS = 'GET_PAUSE_STATUS',
+  GET_ANALYTICS = 'GET_ANALYTICS',
+  GET_INSIGHTS = 'GET_INSIGHTS',
+  GET_DAILY_STATS = 'GET_DAILY_STATS'
 }
 
 /**
@@ -148,6 +153,15 @@ export class BackgroundService {
 
       case MessageType.GET_PAUSE_STATUS:
         return activityDetector.getPauseStatus();
+
+      case MessageType.GET_ANALYTICS:
+        return analyticsEngine.getStatistics(message.payload?.period || 'today');
+
+      case MessageType.GET_INSIGHTS:
+        return insightsEngine.generateInsights(message.payload?.period || 'week');
+
+      case MessageType.GET_DAILY_STATS:
+        return analyticsEngine.getDailyStatistics(message.payload?.date ? new Date(message.payload.date) : new Date());
 
       default:
         throw new Error(`Unknown message type: ${message.type}`);
