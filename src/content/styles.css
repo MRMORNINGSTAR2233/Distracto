@@ -1,0 +1,162 @@
+/* Intervention overlay styles */
+.dar-intervention-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2147483647; /* Maximum z-index */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: dar-fade-in 0.3s ease-out;
+}
+
+@keyframes dar-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dar-intervention-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: dar-slide-up 0.4s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+@keyframes dar-slide-up {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dar-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.dar-subtitle {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.dar-prompt {
+  font-size: 20px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin: 24px 0;
+  line-height: 1.5;
+}
+
+.dar-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.dar-option-btn {
+  padding: 16px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.dar-option-btn:hover {
+  border-color: #4a90e2;
+  background: #f8fbff;
+}
+
+.dar-option-btn.selected {
+  border-color: #4a90e2;
+  background: #e3f2fd;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.dar-input-container {
+  margin: 24px 0;
+}
+
+.dar-input {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.dar-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.dar-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.dar-btn {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dar-btn-primary {
+  background: #4a90e2;
+  color: white;
+}
+
+.dar-btn-primary:hover {
+  background: #357abd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.dar-btn-secondary {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.dar-btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.dar-timer {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #999;
+  font-weight: 500;
+}
