@@ -6,7 +6,8 @@ module.exports = {
     background: './src/background/index.ts',
     content: './src/content/index.ts',
     popup: './src/popup/index.ts',
-    dashboard: './src/dashboard/index.ts'
+    dashboard: './src/dashboard/index.ts',
+    onboarding: './src/onboarding/index.ts'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -35,6 +36,8 @@ module.exports = {
         { from: 'manifest.json', to: '../dist' },
         { from: 'popup.html', to: '../dist' },
         { from: 'dashboard.html', to: '../dist' },
+        { from: 'onboarding.html', to: '../dist' },
+        { from: 'uninstall.html', to: '../dist' },
         { from: 'icons', to: '../dist/icons' }
       ]
     })

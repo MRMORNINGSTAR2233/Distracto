@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Attention Rescue - Welcome</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    /* Welcome Step */
+    .welcome-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .welcome-logo {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .welcome-header h1 {
+      font-size: 28px;
+      margin: 0 0 8px 0;
+      color: #333;
+    }
+
+    .welcome-header p {
+      font-size: 16px;
+      color: #666;
+      margin: 0;
+    }
+
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0;
+    }
+
+    .features-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .features-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .feature-content h3 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .feature-content p {
+      margin: 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Step Header */
+    .step-header {
+      margin-bottom: 24px;
+    }
+
+    .step-header h2 {
+      font-size: 22px;
+      margin: 0 0 8px 0;
+      color: #333;
+    }
+
+    .step-header p {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
+
+    /* Progress Indicator */
+    .progress-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s ease;
+    }
+
+    .progress-dot.active {
+      background: #667eea;
+    }
+
+    .progress-dot.completed {
+      background: #4CAF50;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .form-group .hint {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option:hover {
+      border-color: #667eea;
+      background: #f0f2ff;
+    }
+
+    .radio-option.selected {
+      border-color: #667eea;
+      background: #f0f2ff;
+    }
+
+    .radio-option input[type="radio"] {
+      display: none;
+    }
+
+    .radio-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option.selected .radio-indicator {
+      border-color: #667eea;
+    }
+
+    .radio-option.selected .radio-indicator::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #667eea;
+    }
+
+    .radio-content {
+      flex: 1;
+    }
+
+    .radio-content .title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 2px 0;
+    }
+
+    .radio-content .description {
+      font-size: 12px;
+      color: #666;
+      margin: 0;
+    }
+
+    /* Checkbox Group */
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .checkbox-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-option:hover {
+      border-color: #667eea;
+    }
+
+    .checkbox-option.selected {
+      border-color: #667eea;
+      background: #f0f2ff;
+    }
+
+    .checkbox-option input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkbox-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-option.selected .checkbox-indicator {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+
+    .checkbox-content {
+      flex: 1;
+    }
+
+    .checkbox-content .title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Site Input */
+    .site-input-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .site-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .site-input:focus {
+      border-color: #667eea;
+    }
+
+    .add-site-btn {
+      padding: 10px 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .add-site-btn:hover {
+      background: #5a6fd6;
+    }
+
+    .sites-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .site-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #f0f2ff;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #667eea;
+    }
+
+    .site-tag .remove {
+      cursor: pointer;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    .site-tag .remove:hover {
+      opacity: 1;
+    }
+
+    /* Challenge Preview */
+    .challenge-preview {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .challenge-preview-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .challenge-preview-header h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .challenge-prompt {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .challenge-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .challenge-option {
+      padding: 12px 16px;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .challenge-option:hover {
+      border-color: #667eea;
+      background: #f0f2ff;
+    }
+
+    .try-another-btn {
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 2px solid #667eea;
+      color: #667eea;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .try-another-btn:hover {
+      background: #f0f2ff;
+    }
+
+    /* Learning Mode */
+    .learning-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .learning-toggle-content h3 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+    }
+
+    .learning-toggle-content p {
+      margin: 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      background: #ccc;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: #667eea;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: left 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch.active::after {
+      left: 24px;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #eee;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-skip {
+      background: transparent;
+      color: #999;
+      padding: 12px 16px;
+    }
+
+    .btn-skip:hover {
+      color: #666;
+    }
+
+    /* Complete Step */
+    .complete-content {
+      text-align: center;
+    }
+
+    .complete-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .complete-content h2 {
+      font-size: 24px;
+      margin: 0 0 12px 0;
+    }
+
+    .complete-content p {
+      font-size: 16px;
+      color: #666;
+      margin: 0 0 32px 0;
+    }
+
+    .setup-summary {
+      text-align: left;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .setup-summary h4 {
+      font-size: 14px;
+      color: #667eea;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 14px;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item .label {
+      color: #666;
+    }
+
+    .summary-item .value {
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <!-- Step 0: Welcome -->
+      <div class="step active" id="step-welcome">
+        <div class="welcome-header">
+          <div class="welcome-logo">🎯</div>
+          <h1>Welcome to Digital Attention Rescue</h1>
+          <p>Your AI-powered focus assistant</p>
+        </div>
+
+        <ul class="features-list">
+          <li>
+            <span class="feature-icon">🧠</span>
+            <div class="feature-content">
+              <h3>Smart Distraction Detection</h3>
+              <p>Learns your browsing patterns to identify when you're getting distracted</p>
+            </div>
+          </li>
+          <li>
+            <span class="feature-icon">⚡</span>
+            <div class="feature-content">
+              <h3>Gentle Interventions</h3>
+              <p>Micro-challenges that help you refocus without being intrusive</p>
+            </div>
+          </li>
+          <li>
+            <span class="feature-icon">🔥</span>
+            <div class="feature-content">
+              <h3>Streak & Rewards</h3>
+              <p>Track your focus streaks and earn achievements</p>
+            </div>
+          </li>
+          <li>
+            <span class="feature-icon">📊</span>
+            <div class="feature-content">
+              <h3>Insights & Analytics</h3>
+              <p>Understand your productivity patterns with detailed statistics</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="actions" style="justify-content: center; gap: 16px;">
+          <button class="btn btn-primary" onclick="startSetup()">Get Started</button>
+          <button class="btn btn-skip" onclick="skipSetup()">Skip Setup</button>
+        </div>
+      </div>
+
+      <!-- Step 1: Goals -->
+      <div class="step" id="step-goals">
+        <div class="progress-container">
+          <div class="progress-dot active"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+        </div>
+
+        <div class="step-header">
+          <h2>Set Your Focus Goal</h2>
+          <p>How long do you want to maintain focused browsing?</p>
+        </div>
+
+        <div class="form-group">
+          <label>Daily Focus Streak Goal</label>
+          <div class="radio-group" id="streakGoalGroup">
+            <label class="radio-option" onclick="selectRadio(this, 'streakGoal', 15)">
+              <input type="radio" name="streakGoal" value="15">
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">🌱 Beginner - 15 minutes</p>
+                <p class="description">Great for starting your focus journey</p>
+              </div>
+            </label>
+            <label class="radio-option selected" onclick="selectRadio(this, 'streakGoal', 25)">
+              <input type="radio" name="streakGoal" value="25" checked>
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">⚡ Standard - 25 minutes</p>
+                <p class="description">Pomodoro-style focus sessions</p>
+              </div>
+            </label>
+            <label class="radio-option" onclick="selectRadio(this, 'streakGoal', 45)">
+              <input type="radio" name="streakGoal" value="45">
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">🔥 Ambitious - 45 minutes</p>
+                <p class="description">For deep work enthusiasts</p>
+              </div>
+            </label>
+            <label class="radio-option" onclick="selectRadio(this, 'streakGoal', 60)">
+              <input type="radio" name="streakGoal" value="60">
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">🚀 Expert - 60 minutes</p>
+                <p class="description">Maximum focus sessions</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Site Classification -->
+      <div class="step" id="step-sites">
+        <div class="progress-container">
+          <div class="progress-dot completed"></div>
+          <div class="progress-dot active"></div>
+          <div class="progress-dot"></div>
+          <div class="progress-dot"></div>
+        </div>
+
+        <div class="step-header">
+          <h2>Classify Your Sites</h2>
+          <p>Help us learn which sites you consider productive or distracting</p>
+        </div>
+
+        <div class="form-group">
+          <label>Add Productive Sites (Optional)</label>
+          <div class="site-input-container">
+            <input type="text" class="site-input" id="productiveSiteInput" placeholder="e.g., github.com">
+            <button class="add-site-btn" onclick="addSite('productive')">Add</button>
+          </div>
+          <div class="sites-list" id="productiveSitesList"></div>
+          <p class="hint">Sites where you do your main work</p>
+        </div>
+
+        <div class="form-group">
+          <label>Add Distraction Sites (Optional)</label>
+          <div class="site-input-container">
+            <input type="text" class="site-input" id="distractionSiteInput" placeholder="e.g., reddit.com">
+            <button class="add-site-btn" onclick="addSite('distraction')">Add</button>
+          </div>
+          <div class="sites-list" id="distractionSitesList"></div>
+          <p class="hint">Sites that tend to distract you from work</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Challenges Preview -->
+      <div class="step" id="step-challenges">
+        <div class="progress-container">
+          <div class="progress-dot completed"></div>
+          <div class="progress-dot completed"></div>
+          <div class="progress-dot active"></div>
+          <div class="progress-dot"></div>
+        </div>
+
+        <div class="step-header">
+          <h2>Preview Interventions</h2>
+          <p>Here's what a focus challenge looks like. Try it!</p>
+        </div>
+
+        <div class="challenge-preview" id="challengePreview">
+          <!-- Challenge will be rendered here -->
+        </div>
+
+        <div class="form-group">
+          <label>Select Preferred Challenge Types</label>
+          <div class="checkbox-group" id="challengeTypesGroup">
+            <label class="checkbox-option selected" onclick="toggleCheckbox(this)">
+              <input type="checkbox" name="challengeType" value="reflection" checked>
+              <span class="checkbox-indicator">✓</span>
+              <div class="checkbox-content">
+                <p class="title">🤔 Reflection</p>
+              </div>
+            </label>
+            <label class="checkbox-option selected" onclick="toggleCheckbox(this)">
+              <input type="checkbox" name="challengeType" value="intention" checked>
+              <span class="checkbox-indicator">✓</span>
+              <div class="checkbox-content">
+                <p class="title">🎯 Intention</p>
+              </div>
+            </label>
+            <label class="checkbox-option selected" onclick="toggleCheckbox(this)">
+              <input type="checkbox" name="challengeType" value="quick-task" checked>
+              <span class="checkbox-indicator">✓</span>
+              <div class="checkbox-content">
+                <p class="title">⚡ Quick Task</p>
+              </div>
+            </label>
+            <label class="checkbox-option selected" onclick="toggleCheckbox(this)">
+              <input type="checkbox" name="challengeType" value="breathing" checked>
+              <span class="checkbox-indicator">✓</span>
+              <div class="checkbox-content">
+                <p class="title">🧘 Breathing</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Learning Mode -->
+      <div class="step" id="step-learning">
+        <div class="progress-container">
+          <div class="progress-dot completed"></div>
+          <div class="progress-dot completed"></div>
+          <div class="progress-dot completed"></div>
+          <div class="progress-dot active"></div>
+        </div>
+
+        <div class="step-header">
+          <h2>Final Settings</h2>
+          <p>Configure how the extension behaves</p>
+        </div>
+
+        <div class="form-group">
+          <div class="learning-toggle">
+            <div class="learning-toggle-content">
+              <h3>🎓 Learning Mode</h3>
+              <p>Extension observes your patterns for 3 days before showing interventions</p>
+            </div>
+            <div class="toggle-switch active" id="learningModeToggle" onclick="toggleLearningMode()"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Intervention Frequency</label>
+          <div class="radio-group" id="frequencyGroup">
+            <label class="radio-option" onclick="selectRadio(this, 'frequency', 'minimal')">
+              <input type="radio" name="frequency" value="minimal">
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">Minimal</p>
+                <p class="description">Only for obvious distractions</p>
+              </div>
+            </label>
+            <label class="radio-option selected" onclick="selectRadio(this, 'frequency', 'moderate')">
+              <input type="radio" name="frequency" value="moderate" checked>
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">Moderate</p>
+                <p class="description">Balanced approach (recommended)</p>
+              </div>
+            </label>
+            <label class="radio-option" onclick="selectRadio(this, 'frequency', 'aggressive')">
+              <input type="radio" name="frequency" value="aggressive">
+              <span class="radio-indicator"></span>
+              <div class="radio-content">
+                <p class="title">Aggressive</p>
+                <p class="description">More frequent interventions</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button class="btn btn-primary" onclick="completeSetup()">Complete Setup</button>
+        </div>
+      </div>
+
+      <!-- Step 5: Complete -->
+      <div class="step" id="step-complete">
+        <div class="complete-content">
+          <div class="complete-icon">🎉</div>
+          <h2>You're All Set!</h2>
+          <p>Digital Attention Rescue is ready to help you stay focused.</p>
+
+          <div class="setup-summary" id="setupSummary">
+            <h4>Your Settings</h4>
+            <div class="summary-item">
+              <span class="label">Focus Goal</span>
+              <span class="value" id="summaryGoal">25 minutes</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Intervention Frequency</span>
+              <span class="value" id="summaryFrequency">Moderate</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Learning Mode</span>
+              <span class="value" id="summaryLearning">Enabled</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Challenge Types</span>
+              <span class="value" id="summaryChallenges">All types</span>
+            </div>
+          </div>
+
+          <div class="actions" style="justify-content: center; border-top: none; padding-top: 0;">
+            <button class="btn btn-primary" onclick="openDashboard()">Open Dashboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="dist/onboarding.js"></script>
+</body>
+</html>

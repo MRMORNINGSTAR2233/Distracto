@@ -40,7 +40,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["dist/*"],
+      "resources": ["dist/*", "onboarding.html"],
       "matches": ["<all_urls>"]
     }
   ]

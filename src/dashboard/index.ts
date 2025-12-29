@@ -500,10 +500,17 @@ class DashboardUI {
 
       <div class="settings-section">
         <h2 class="settings-title">Data Management</h2>
-        <div style="display: flex; gap: 12px;">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
           <button class="btn btn-white" id="exportDataBtn">📥 Export All Data</button>
+          <label class="btn btn-white" style="cursor: pointer;">
+            📤 Import Data
+            <input type="file" id="importDataInput" accept=".json" style="display: none;">
+          </label>
           <button class="btn btn-danger" id="deleteDataBtn">🗑️ Delete All Data</button>
         </div>
+        <p style="color: #888; font-size: 12px; margin-top: 12px;">
+          Export your data as JSON for backup or import previously exported data.
+        </p>
       </div>
     `;
   }
@@ -569,6 +576,12 @@ class DashboardUI {
     const exportDataBtn = document.getElementById('exportDataBtn');
     if (exportDataBtn) {
       exportDataBtn.addEventListener('click', () => this.handleExport());
+    }
+
+    // Import data input
+    const importDataInput = document.getElementById('importDataInput') as HTMLInputElement;
+    if (importDataInput) {
+      importDataInput.addEventListener('change', (e) => this.handleImport(e));
     }
 
     // Delete data button
@@ -663,22 +676,30 @@ class DashboardUI {
    */
   private async handleExport(): Promise<void> {
     try {
-      // Export all data as JSON
-      const exportData = {
+      // Request full export from background service
+      const fullExport = await this.sendMessage(MessageType.EXPORT_DATA);
+      
+      // Fallback to local data if background export fails
+      const exportData = fullExport || {
         streak: this.data?.streak,
         progress: this.data?.progress,
         achievements: this.data?.achievements,
         settings: this.data?.settings,
-        exportedAt: new Date().toISOString()
+        exportedAt: new Date().toISOString(),
+        version: '1.0.0'
       };
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `digital-attention-rescue-${Date.now()}.json`;
+      a.download = `digital-attention-rescue-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      
+      alert('Data exported successfully!');
     } catch (error) {
       console.error('Failed to export data:', error);
       alert('Failed to export data. Please try again.');
@@ -689,17 +710,91 @@ class DashboardUI {
    * Handle delete all data
    */
   private async handleDeleteData(): Promise<void> {
-    if (!confirm('Are you sure you want to delete all data? This cannot be undone.')) {
+    // Two-step confirmation for destructive action
+    const firstConfirm = confirm(
+      '⚠️ Warning: This will permanently delete all your data including:\n\n' +
+      '• Browsing history and activity logs\n' +
+      '• All streak progress and achievements\n' +
+      '• Site classifications and settings\n\n' +
+      'This action cannot be undone. Are you sure you want to continue?'
+    );
+    
+    if (!firstConfirm) return;
+    
+    const secondConfirm = confirm(
+      '🚨 FINAL CONFIRMATION\n\n' +
+      'Type "DELETE" in the next prompt to confirm permanent deletion.'
+    );
+    
+    if (!secondConfirm) return;
+    
+    const typed = prompt('Type DELETE to confirm:');
+    if (typed !== 'DELETE') {
+      alert('Deletion cancelled. Your data is safe.');
       return;
     }
 
     try {
+      await this.sendMessage(MessageType.DELETE_ALL_DATA);
       await chrome.storage.local.clear();
-      alert('All data has been deleted. The extension will now reload.');
+      alert('✅ All data has been deleted successfully.\n\nThe extension will now reload with default settings.');
       window.location.reload();
     } catch (error) {
       console.error('Failed to delete data:', error);
-      alert('Failed to delete data. Please try again.');
+      alert('❌ Failed to delete data. Please try again.');
+    }
+  }
+
+  /**
+   * Handle data import
+   */
+  private async handleImport(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    
+    if (!file) return;
+    
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      // Validate basic structure
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid file format');
+      }
+      
+      // Confirm import
+      const confirmImport = confirm(
+        '📤 Import Data\n\n' +
+        'This will merge the imported data with your current data.\n' +
+        'Settings will be overwritten if present in the import.\n\n' +
+        'Do you want to continue?'
+      );
+      
+      if (!confirmImport) {
+        input.value = '';
+        return;
+      }
+      
+      // Send to background for import
+      const result = await this.sendMessage(MessageType.IMPORT_DATA, data);
+      
+      if (result.success) {
+        alert('✅ Data imported successfully!');
+        await this.loadData();
+        this.render();
+        if (this.currentTab === 'settings') {
+          this.setupSettingsListeners();
+        }
+      } else {
+        throw new Error(result.message || 'Import failed');
+      }
+    } catch (error) {
+      console.error('Failed to import data:', error);
+      alert(`❌ Failed to import data: ${(error as Error).message}`);
+    } finally {
+      // Reset input
+      input.value = '';
     }
   }
 

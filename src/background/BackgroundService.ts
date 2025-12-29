@@ -32,7 +32,10 @@ export enum MessageType {
   GET_PAUSE_STATUS = 'GET_PAUSE_STATUS',
   GET_ANALYTICS = 'GET_ANALYTICS',
   GET_INSIGHTS = 'GET_INSIGHTS',
-  GET_DAILY_STATS = 'GET_DAILY_STATS'
+  GET_DAILY_STATS = 'GET_DAILY_STATS',
+  EXPORT_DATA = 'EXPORT_DATA',
+  DELETE_ALL_DATA = 'DELETE_ALL_DATA',
+  IMPORT_DATA = 'IMPORT_DATA'
 }
 
 /**
@@ -162,6 +165,16 @@ export class BackgroundService {
 
       case MessageType.GET_DAILY_STATS:
         return analyticsEngine.getDailyStatistics(message.payload?.date ? new Date(message.payload.date) : new Date());
+
+      case MessageType.EXPORT_DATA:
+        return storageManager.exportData();
+
+      case MessageType.DELETE_ALL_DATA:
+        await storageManager.deleteAllData();
+        return { success: true };
+
+      case MessageType.IMPORT_DATA:
+        return this.handleImportData(message.payload);
 
       default:
         throw new Error(`Unknown message type: ${message.type}`);
@@ -509,6 +522,41 @@ export class BackgroundService {
           await notificationManager.showWhitelistSuggestion(suggestions);
         }
       }
+    }
+  }
+
+  /**
+   * Handle data import
+   */
+  private async handleImportData(data: any): Promise<{ success: boolean; message: string }> {
+    try {
+      // Validate import data structure
+      if (!data || typeof data !== 'object') {
+        return { success: false, message: 'Invalid import data format' };
+      }
+
+      // Import settings if present
+      if (data.settings) {
+        await storageManager.saveSettings(data.settings);
+      }
+
+      // Import streak if present
+      if (data.streak) {
+        await storageManager.saveStreak(data.streak);
+      }
+
+      // Import classifications if present
+      if (data.classifications && typeof data.classifications === 'object') {
+        for (const [url, classification] of Object.entries(data.classifications)) {
+          await storageManager.saveSiteClassification(url, classification as any);
+        }
+      }
+
+      console.log('Data imported successfully');
+      return { success: true, message: 'Data imported successfully' };
+    } catch (error) {
+      console.error('Failed to import data:', error);
+      return { success: false, message: 'Failed to import data' };
     }
   }
 }
